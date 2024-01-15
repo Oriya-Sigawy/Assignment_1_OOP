@@ -4,7 +4,7 @@ import java.util.ArrayList;
  * This class represents a player of the game
  */
 public class ConcretePlayer implements Player{
-    private ArrayList<ConcretePiece> list_of_pieces= new ArrayList<>();
+    private final ArrayList<ConcretePiece> list_of_pieces= new ArrayList<>();
     private int wins;
     private final boolean is_player_one;
 
