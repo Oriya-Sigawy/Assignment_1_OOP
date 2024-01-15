@@ -1,13 +1,12 @@
-import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * This class represents a piece in the game
  */
 public abstract class ConcretePiece implements Piece {
 
-    private final ArrayList<Position> steps=new ArrayList<>();
+    private final Stack<Position> steps=new Stack<>();      //contains the positions that the piece stepped on
     private int dist=0;
-    private int numOfSteps=0;
     private final int pieceNum;
     private final ConcretePlayer owner;
     private final String type;
@@ -26,8 +25,8 @@ public abstract class ConcretePiece implements Piece {
     }
 
     /**
-     * returns  the piece's owner
-     * @return  the piece's owner
+     * returns the piece's owner
+     * @return the piece's owner
      */
     @Override
     public Player getOwner() {
@@ -51,31 +50,57 @@ public abstract class ConcretePiece implements Piece {
 
         return pieceNum;
     }
-    public ArrayList<Position> getSteps() {
+
+    /**
+     * return the list of the position that the piece stepped on
+     * @return the list of the position that the piece stepped on
+     */
+    public Stack<Position> getSteps() {
         return steps;
     }
+
+    /**
+     * add a position to the list of the position that the piece stepped on
+     * @param p position to add to the list
+     */
     public void addStep(Position p)
     {
-        steps.add(p);
-    }
-    public void removeStep() {steps.remove(steps.size()-1);}
-    public int getNumOfSteps() {
-        return numOfSteps;
+        steps.push(p);
     }
 
-    public void setNumOfSteps(int num) {
-        this.numOfSteps+=num;
-    }
+    /**
+     *remove the last step from the steps stack (in case of undo)
+     */
+    public void removeStep() {steps.pop();}
+
+    /**
+     * return the number of pieces that this piece killed
+     * @return the number of pieces that this piece killed
+     */
     public int getNumOfKills() {
         return numOfKills;
     }
+
+    /**
+     * add 1 or sub 1 from the number of pieces that this piece killed
+     * @param num 1 in case of a kill, -1 in case of undo a kill
+     */
     public void setNumOfKills(int num) {
         this.numOfKills+=num;
     }
+
+    /**
+     * returns the distance (in squares) that this piece moved on the game board during the game
+     * @return the distance (in squares) that this piece moved
+     */
     public int getDist() {
         return dist;
     }
 
+    /**
+     * add the distance this piece moved in a current move to the total distance this piece moved during the game
+     * @param dist the distance this piece moved in a current move
+     */
     public void setDist(int dist) {
         this.dist += dist;
     }

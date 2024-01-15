@@ -44,11 +44,19 @@ public class Position {
     public int getY() {
         return y;
     }
+
+    /**
+     * returns the number of different pieces who stepped on this position
+     * @return the number of different pieces who stepped on this position
+     */
     public int getDiffPiecesStepped() {
         return diffPiecesStepped;
     }
 
-    public void setDiffPiecesStepped(int diffPiecesStepped) {
-        this.diffPiecesStepped += diffPiecesStepped;
+    /**
+     * add 1 to the number of different pieces who stepped on this position
+     */
+    public void setDiffPiecesStepped() {
+        this.diffPiecesStepped ++;
     }
 }

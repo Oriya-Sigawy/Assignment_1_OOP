@@ -83,33 +83,29 @@ public class GameLogic implements PlayableLogic {
         board[a.getX()][a.getY()] = null;                                    //remove the piece from the previous position
 
         //the following commands are related to the second part of the assignment (the comparators)
-        board[b.getX()][b.getY()].setNumOfSteps(1);                           //increase by 1 the number of steps of rhe moving piece
         if (a.getX() == b.getX()) {
             board[b.getX()][b.getY()].setDist(Math.abs(a.getY() - b.getY())); //add the distance that the piece moved to the piece's dist variable
         } else {
             board[b.getX()][b.getY()].setDist(Math.abs(a.getX() - b.getX()));
         }
-        board[b.getX()][b.getY()].addStep(b);               //add the destination position the steps list of the moving piece
-
+        board[b.getX()][b.getY()].addStep(positions.get(BOARD_SIZE * b.getX() + b.getY())); //add the destination position the steps list of the moving piece
         actions.push(new GameAction("move", a.getX(), a.getY(), b.getX(), b.getY())); //add the action to the game actions stuck
+
         //check if the move killed another piece according to the game rules
         kill(0, -1, getPieceAtPosition(b).getType(), b);  //check up
         kill(0, 1, getPieceAtPosition(b).getType(), b);   //check down
         kill(-1, 0, getPieceAtPosition(b).getType(), b);  //check left
         kill(1, 0, getPieceAtPosition(b).getType(), b);   //check right
 
-        if (isGameFinished())
-        {
-            actions.empty();
-            if (winner.isPlayerOne())
-            {
+        if (isGameFinished()) {        //check if the move end the game
+            actions.empty();          //empty the moves stack
+            //add 1 to the winner's number of wins
+            if (winner.isPlayerOne()) {
                 player1.setWins();
-            }
-            else
-            {
+            } else {
                 player2.setWins();
             }
-            comp_and_print();
+            comp_and_print();         //call the func of part 2 of this assignment
         }
         //gives the turn to the other player
         if (current.isPlayerOne()) {
@@ -131,8 +127,7 @@ public class GameLogic implements PlayableLogic {
         if (killedX < 0 || killedX >= BOARD_SIZE || killedY < 0 || killedY >= BOARD_SIZE) {         //check if the killed piece is inside the game board
             return;
         }
-        if (board[killedX][killedY]==null)
-        {
+        if (board[killedX][killedY] == null) {                  //if there isn't killed piece
             return;
         }
         if (board[killedX][killedY] != null && board[killedX][killedY].getType().equals(type)) {    //if the killed piece is from the same type of the killer return
@@ -145,19 +140,18 @@ public class GameLogic implements PlayableLogic {
         //define the piece that help rhe killer according to the game rules
         int neighbor_x = killerP.getX() + 2 * delX;
         int neighbor_y = killerP.getY() + 2 * delY;
-        if (neighbor_x < 0 || neighbor_x >= BOARD_SIZE || neighbor_y < 0 || neighbor_y >= BOARD_SIZE) { //check if the neighbor piece is inside the game board
+
+        //if the neighbor piece is not inside the game board, or the neighbor is a corner,
+        // or the neighbor is on the same group of the killer, kill the piece
+
+        if ((neighbor_x < 0 || neighbor_x >= BOARD_SIZE || neighbor_y < 0 || neighbor_y >= BOARD_SIZE) ||
+                (positions.get(BOARD_SIZE * neighbor_x + neighbor_y).isCorner()) ||
+                (board[neighbor_x][neighbor_y] != null && board[neighbor_x][neighbor_y].getType().equals(type))) {
             actions.push(new GameAction("kill", killedX, killedY, board[killedX][killedY]));
             board[killedX][killedY] = null;
             board[killerP.getX()][killerP.getY()].setNumOfKills(1);
-            return;
-        }
-        if (board[neighbor_x][neighbor_y] != null && board[neighbor_x][neighbor_y].getType().equals(type)) { //check if the neighbor can help the killer according to the game rules
-            actions.push(new GameAction("kill", killedX, killedY, board[killedX][killedY]));
-            board[killerP.getX()][killerP.getY()].setNumOfKills(1);
-            board[killedX][killedY] = null;
         }
     }
-
     private void killTheKing(int x, int y) {
         if (x < BOARD_SIZE - 1) {
             //check that the king is surrounded by the enemy pawns from all directions
@@ -185,7 +179,6 @@ public class GameLogic implements PlayableLogic {
 
     /**
      * return the piece at a given position
-     *
      * @param position The position for which to retrieve the piece.
      * @return the piece at a given position
      */
@@ -196,7 +189,6 @@ public class GameLogic implements PlayableLogic {
 
     /**
      * return the first player
-     *
      * @return the first player
      */
     @Override
@@ -206,7 +198,6 @@ public class GameLogic implements PlayableLogic {
 
     /**
      * the second player
-     *
      * @return the second player
      */
     @Override
@@ -216,7 +207,6 @@ public class GameLogic implements PlayableLogic {
 
     /**
      * check if the game is finished
-     *
      * @return true if the game is finished
      */
     @Override
@@ -226,15 +216,15 @@ public class GameLogic implements PlayableLogic {
             winner = player1;
             return true;
         }
-        if (board[0][10] instanceof King) {
+        if (board[0][BOARD_SIZE - 1] instanceof King) {
             winner = player1;
             return true;
         }
-        if (board[10][0] instanceof King) {
+        if (board[BOARD_SIZE - 1][0] instanceof King) {
             winner = player1;
             return true;
         }
-        if (board[10][10] instanceof King) {
+        if (board[BOARD_SIZE - 1][BOARD_SIZE - 1] instanceof King) {
             winner = player1;
             return true;
         }
@@ -247,7 +237,9 @@ public class GameLogic implements PlayableLogic {
                     break;
                 }
             }
-            if (isKingAlive) {break;}
+            if (isKingAlive) {
+                break;
+            }
         }
         if (!isKingAlive) {
             winner = player2;
@@ -257,7 +249,6 @@ public class GameLogic implements PlayableLogic {
 
     /**
      * returns  true if this is player 2's turn
-     *
      * @return true if this is player 2's turn
      */
     @Override
@@ -287,13 +278,12 @@ public class GameLogic implements PlayableLogic {
             GameAction act = actions.pop();     //the last move
             if (act.getAct_type().equals("kill")) {
                 killedAPiece = true;
-                board[act.getPreviousX()][act.getPreviousY()] = (ConcretePiece) act.getKilled();
+                board[act.getPreviousX()][act.getPreviousY()] = act.getKilled();
             }
             if (act.getAct_type().equals("move")) {
                 board[act.getPreviousX()][act.getPreviousY()] = board[act.getCurrentX()][act.getCurrentY()];
                 board[act.getCurrentX()][act.getCurrentY()] = null;
                 board[act.getPreviousX()][act.getPreviousY()].removeStep();           //remove the last step from the piece's step list
-                board[act.getPreviousX()][act.getPreviousY()].setNumOfSteps(-1);      //decrease by 1 the number of steps the piece did
                 if (act.getCurrentX() == act.getPreviousX()) {
                     board[act.getPreviousX()][act.getPreviousY()].setDist(-1 * Math.abs(act.getPreviousY() - act.getCurrentY()));
                 } else {
@@ -315,7 +305,6 @@ public class GameLogic implements PlayableLogic {
 
     /**
      * returns the height and the width of the board
-     *
      * @return the height and the width of the board
      */
     @Override
@@ -324,8 +313,8 @@ public class GameLogic implements PlayableLogic {
     }
 
     private void resetFunc() {
-        player1.setList_of_pieces(new ArrayList<>());
-        player2.setList_of_pieces(new ArrayList<>());
+        player1.resetPieces();
+        player2.resetPieces();
         for (int x = 0; x < 11; x++) {
             for (int y = 0; y < 11; y++) {
                 board[x][y] = null;
@@ -404,15 +393,14 @@ public class GameLogic implements PlayableLogic {
         allPieces.sort(new ConcretePieceCompareByDistance());
         comp_by_dist(allPieces);
         /////////////
-        for (Position pos : positions) {
-            for (ConcretePiece cp : allPieces) {
-                for (Position step : cp.getSteps()) {
-                    if (step.getX()==pos.getX()&&step.getY()==pos.getY()) {
-                        pos.setDiffPiecesStepped(1);
-                    }
+        for (Position pos : positions) { //iterates on every position
+            for (ConcretePiece cp : allPieces) {   //iterates on every piece
+                if (cp.getSteps().contains(pos)) {  //if the position is in the steps list of the piece,
+                    pos.setDiffPiecesStepped();    // increase by 1 the number of different pieces who stepped on this position
                 }
             }
         }
+
         positions.sort(new PositionCompareByDifferentPieceStepped());
         squares_comp(positions);
     }
@@ -446,12 +434,11 @@ public class GameLogic implements PlayableLogic {
     }
 
     private void comp_by_kills(ArrayList<ConcretePiece> pieces) {
-        for (int i = 0; i < pieces.size(); i++) {
+        for (ConcretePiece piece : pieces) {
             String str;
-            ConcretePiece cp = pieces.get(i);
-            if (cp.getNumOfKills() > 0) {
-                if (cp.getOwner().equals(player1)) {
-                    if (cp.getType().equals("♔")) {
+            if (piece.getNumOfKills() > 0) {
+                if (piece.getOwner().equals(player1)) {
+                    if (piece.getType().equals("♔")) {
                         str = "K";
                     } else {
                         str = "D";
@@ -459,15 +446,15 @@ public class GameLogic implements PlayableLogic {
                 } else {
                     str = "A";
                 }
-                str += cp.getNum() + ": " + cp.getNumOfKills() + " kills";
+                str += piece.getNum() + ": " + piece.getNumOfKills() + " kills";
                 System.out.println(str);
             }
         }
-            for (int i = 0; i < 75; i++) {
-                System.out.print("*");
-            }
-            System.out.println();
+        for (int i = 0; i < 75; i++) {
+            System.out.print("*");
         }
+        System.out.println();
+    }
 
     private void comp_by_dist(ArrayList<ConcretePiece> pieces) {
         for (int i = 0; i < pieces.size() && pieces.get(i).getDist() > 0; i++) {
@@ -482,7 +469,7 @@ public class GameLogic implements PlayableLogic {
             } else {
                 str = "A";
             }
-            str += cp.getNum() + ": " + cp.getDist()+" squares";
+            str += cp.getNum() + ": " + cp.getDist() + " squares";
             System.out.println(str);
         }
         for (int i = 0; i < 75; i++) {
@@ -490,12 +477,12 @@ public class GameLogic implements PlayableLogic {
         }
         System.out.println();
     }
-    private void squares_comp(ArrayList<Position> positions)
-    {
+
+    private void squares_comp(ArrayList<Position> positions) {
         for (int i = 0; i < positions.size() && positions.get(i).getDiffPiecesStepped() > 1; i++) {
-            String str="(";
+            String str = "(";
             Position pos = positions.get(i);
-          str+=pos.getX()+", "+pos.getY()+")"+pos.getDiffPiecesStepped()+" pieces";
+            str += pos.getX() + ", " + pos.getY() + ")" + pos.getDiffPiecesStepped() + " pieces";
             System.out.println(str);
         }
         for (int i = 0; i < 75; i++) {

@@ -39,15 +39,29 @@ public class ConcretePlayer implements Player{
     /**
      * increase the number of wins by 1
      */
-    public void setWins(){wins=wins+1;}
+    public void setWins(){wins++;}
+
+    /**
+     * add a piece to the player's list of pieces
+     * @param p the piece to add
+     */
     public void addPiece(ConcretePiece p)
     {
         list_of_pieces.add(p);
     }
+
+    /**
+     * returns the player's list of pieces
+     * @return the player's list of pieces
+     */
     public ArrayList<ConcretePiece> getList_of_pieces() {
         return list_of_pieces;
     }
-    public void setList_of_pieces(ArrayList<ConcretePiece> pieces) {
-        list_of_pieces=pieces;
+
+    /**
+     *clear the player's list of pieces
+     */
+    public void resetPieces() {
+        list_of_pieces.clear();
     }
 }
