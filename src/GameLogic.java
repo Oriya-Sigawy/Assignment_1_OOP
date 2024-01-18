@@ -269,6 +269,10 @@ public class GameLogic implements PlayableLogic {
      */
     @Override
     public void undoLastMove() {
+         if (actions.isEmpty())
+         {
+             return;
+         }
         boolean end = false;
         boolean killedAPiece = false;
         while (!end) {
