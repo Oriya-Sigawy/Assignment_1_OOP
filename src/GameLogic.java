@@ -98,7 +98,7 @@ public class GameLogic implements PlayableLogic {
         kill(1, 0, getPieceAtPosition(b).getType(), b);   //check right
 
         if (isGameFinished()) {        //check if the move end the game
-            actions.empty();          //empty the moves stack
+            actions.clear();          //empty the moves stack
             //add 1 to the winner's number of wins
             if (winner.isPlayerOne()) {
                 player1.setWins();
