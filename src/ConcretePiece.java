@@ -13,7 +13,7 @@ public abstract class ConcretePiece implements Piece {
     private int numOfKills=0;
 
     /**
-     * construct a new piece in the game
+     * construct a new ConcretePiece in the game
      * @param p the piece's owner
      * @param s the piece's type
      * @param num the piece's number

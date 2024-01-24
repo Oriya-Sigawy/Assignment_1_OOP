@@ -11,7 +11,7 @@ public class ConcretePieceCompareByNumOfSteps implements Comparator<ConcretePiec
             if (o1.getOwner().equals(o2.getOwner())) {  //if their IDs are equal, compare by belonging to the winner group
                 return Integer.compare(o1.getNum(), o2.getNum());
             }
-            return Boolean.compare(o1.getOwner().equals(GameLogic.winner), o2.getOwner().equals(GameLogic.winner));
+            return Boolean.compare(o1.getOwner().equals(GameLogic.getWinner()), o2.getOwner().equals(GameLogic.getWinner()));
         }
         return Integer.compare(o1.getSteps().size(), o2.getSteps().size());
     }

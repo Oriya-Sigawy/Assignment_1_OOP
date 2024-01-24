@@ -9,10 +9,18 @@ public class GameLogic implements PlayableLogic {
      * BOARD_SIZE represent the height and the width of the board
      */
     private final ArrayList<Position> positions = new ArrayList<>();
-    public static final int BOARD_SIZE = 11;
-    public static ConcretePlayer winner;
-    private final static ConcretePiece[][] board = new ConcretePiece[BOARD_SIZE][BOARD_SIZE]; //represent the game board
-    private static final Stack<GameAction> actions = new Stack<>();
+    private static final int BOARD_SIZE = 11;
+    private static ConcretePlayer winner;
+
+    /**
+     * getter  for the winner
+     * @return the winner
+     */
+    public static ConcretePlayer getWinner() {
+        return winner;
+    }
+    private final ConcretePiece[][] board = new ConcretePiece[BOARD_SIZE][BOARD_SIZE]; //represent the game board
+    private final Stack<GameAction> actions = new Stack<>();
 
     /**
      * constructs a new game logic
@@ -23,7 +31,7 @@ public class GameLogic implements PlayableLogic {
 
     private final ConcretePlayer player1 = new ConcretePlayer(true);
     private final ConcretePlayer player2 = new ConcretePlayer(false);
-    private Player current = player2;     //saves the player who owns the turn
+    private Player currentTurn = player2;     //saves the player who owns the turn
 
     /**
      * The method checks if the asked move is legal and if the move kills another piece.
@@ -34,7 +42,7 @@ public class GameLogic implements PlayableLogic {
      */
     @Override
     public boolean move(Position a, Position b) {
-        if (!board[a.getX()][a.getY()].getOwner().equals(current)) {    //check that the moving piece owner equals to the turn's owner
+        if (!board[a.getX()][a.getY()].getOwner().equals(currentTurn)) {    //check that the moving piece owner equals to the turn's owner
             return false;
         }
         if (a.equals(b) || (a.getX() != b.getX() && a.getY() != b.getY())) {     //illegal move
@@ -108,10 +116,10 @@ public class GameLogic implements PlayableLogic {
             comp_and_print();         //call the func of part 2 of this assignment
         }
         //gives the turn to the other player
-        if (current.isPlayerOne()) {
-            current = player2;
+        if (currentTurn.isPlayerOne()) {
+            currentTurn = player2;
         } else {
-            current = player1;
+            currentTurn = player1;
         }
         return true;
     }
@@ -253,7 +261,7 @@ public class GameLogic implements PlayableLogic {
      */
     @Override
     public boolean isSecondPlayerTurn() {
-        return !current.isPlayerOne();
+        return !currentTurn.isPlayerOne();
     }
 
     /**
@@ -293,10 +301,10 @@ public class GameLogic implements PlayableLogic {
                 } else {
                     board[act.getPreviousX()][act.getPreviousY()].setDist(-1 * Math.abs(act.getPreviousX() - act.getCurrentX()));
                 }
-                if (current.isPlayerOne()) {     //give the turn to the player that did the last move
-                    current = player2;
+                if (currentTurn.isPlayerOne()) {     //give the turn to the player that did the last move
+                    currentTurn = player2;
                 } else {
-                    current = player1;
+                    currentTurn = player1;
                 }
                 if (killedAPiece) {
                     board[act.getPreviousX()][act.getPreviousY()].setNumOfKills(-1);
@@ -315,6 +323,7 @@ public class GameLogic implements PlayableLogic {
     public int getBoardSize() {
         return BOARD_SIZE;
     }
+    public static int getBoardSizeStatic() {return BOARD_SIZE;}
 
     private void resetFunc() {
         player1.resetPieces();
@@ -364,7 +373,7 @@ public class GameLogic implements PlayableLogic {
         resetPiece(5, 7, 13, player1);
 
         resetPiece(5, 5, 7, player1);
-        current = player2;
+        currentTurn = player2;
         winner = null;
     }
 

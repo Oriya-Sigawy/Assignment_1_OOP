@@ -11,32 +11,32 @@ public class GameAction {
 
     /**
      * constructs a new kill act
-     * @param at type of act (kill)
+     * @param actionType type of act (kill)
      * @param x x coordinate of the killed piece's position
      * @param y y coordinate of the killed piece's position
-     * @param p the killed piece
+     * @param piece the killed piece
      */
-    public GameAction(String at, int x, int y, ConcretePiece p) {
-        act_type = at; //kill
+    public GameAction(String actionType, int x, int y, ConcretePiece piece) {
+        act_type = actionType; //kill
         previousX = x;
         previousY = y;
-        killed = p;
+        killed = piece;
     }
 
     /**
      *  constructs a new move act
-     * @param at type of act (move)
-     * @param px the x coordinate of the previous position of the piece
-     * @param py the y coordinate of the previous position of the piece
-     * @param cx the x coordinate of the current position of the piece
-     * @param cy the y coordinate of the current position of the piece
+     * @param actionType type of act (move)
+     * @param previous_x the x coordinate of the previous position of the piece
+     * @param previous_y the y coordinate of the previous position of the piece
+     * @param current_x the x coordinate of the current position of the piece
+     * @param current_y the y coordinate of the current position of the piece
      */
-    public GameAction(String at, int px, int py, int cx, int cy) {
-        act_type = at; //move
-        previousX = px;
-        previousY = py;
-        currentX = cx;
-        currentY = cy;
+    public GameAction(String actionType, int previous_x, int previous_y, int current_x, int current_y) {
+        act_type = actionType; //move
+        previousX = previous_x;
+        previousY = previous_y;
+        currentX = current_x;
+        currentY = current_y;
     }
 
     /**

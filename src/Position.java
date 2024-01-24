@@ -3,7 +3,7 @@
  * This class represents a position in the game board
  */
 public class Position {
-    private static final int BOARD_SIZE = GameLogic.BOARD_SIZE;
+    private static final int BOARD_SIZE = GameLogic.getBoardSizeStatic();
     private final int x;
     private final int y;
     private int diffPiecesStepped=0;
